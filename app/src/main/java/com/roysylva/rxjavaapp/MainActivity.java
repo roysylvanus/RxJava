@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         textView = (TextView)findViewById(R.id.tvView);
 
+        //just operator converts an item to observable
         myObservable = Observable.just(greeting);
 
 
@@ -105,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         compositeDisposable.add(
         myObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(myObserver));
+                .subscribeWith(myObserver));
 
 
 
@@ -131,8 +132,12 @@ public class MainActivity extends AppCompatActivity {
         compositeDisposable.add(
                 myObservable.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(myObserver2));
+                        .subscribeWith(myObserver2));
 
+        compositeDisposable.add(
+                myObservable.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(getObserver()));
     }
 
     @Override
@@ -151,5 +156,29 @@ public class MainActivity extends AppCompatActivity {
 When you are using CompositeDisposable, If you call to dispose() method, you will no longer be able to add disposables to that composite disposable.
 
 But if you call to clear() method you can still add disposable to the composite disposable . Clear() method just clears the disposables that are currently held within the instance. */
+    }
+
+
+    private DisposableObserver getObserver(){
+        myObserver = new DisposableObserver<String>() {
+            @Override
+            public void onNext(@NonNull String s) {
+
+                Log.e(TAG,"on next invoked");
+                textView.setText(s);
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Log.e(TAG,"on error invoked");
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e(TAG,"on complete invoked");
+            }
+        };
+
+        return myObserver;
     }
 }
