@@ -12,6 +12,7 @@ import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -19,12 +20,23 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
+    //here we create a string and set it as an observable item
     private String greeting = "Hello from RxJAva";
+
     private Observable<String> myObservable;
+
+    //then we create an observer for the observable
+    //we can always create more than one observer for an observable
     private DisposableObserver<String> myObserver;
+
+    private DisposableObserver<String> myObserver2;
     private static final String TAG = "MainActivity";
     private TextView textView;
    // private Disposable disposable;
+
+
+    //composite disposable helps to clear all subscriptions when you have more than one observer
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
 
     @Override
@@ -35,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
         textView = (TextView)findViewById(R.id.tvView);
 
         myObservable = Observable.just(greeting);
-        myObservable.subscribeOn(Schedulers.io());
-        myObservable.observeOn(AndroidSchedulers.mainThread());
 
 
                 //observer with no disposabele interface
@@ -91,7 +101,37 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        myObservable.subscribe(myObserver);
+        //here we add observers to the composite disposable
+        compositeDisposable.add(
+        myObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(myObserver));
+
+
+
+        myObserver2 = new DisposableObserver<String>() {
+            @Override
+            public void onNext(@NonNull String s) {
+
+                Log.e(TAG,"on next invoked");
+                textView.setText(s);
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Log.e(TAG,"on error invoked");
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e(TAG,"on complete invoked");
+            }
+        };
+
+        compositeDisposable.add(
+                myObservable.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(myObserver2));
 
     }
 
@@ -99,5 +139,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
        // disposable.dispose();
+
+       // myObserver.dispose();
+       // myObserver2.dispose();
+
+        //here we call composite diposable to clear all subscriptions in order to prevent any memory leak
+        compositeDisposable.clear();
+
+
+        /*//What is the difference between clear() and dispose() ?
+When you are using CompositeDisposable, If you call to dispose() method, you will no longer be able to add disposables to that composite disposable.
+
+But if you call to clear() method you can still add disposable to the composite disposable . Clear() method just clears the disposables that are currently held within the instance. */
     }
 }
