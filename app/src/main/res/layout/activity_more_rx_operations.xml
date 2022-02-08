@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MoreRxOperations">
 
     <TextView
-        android:id="@+id/tvView"
+        android:id="@+id/tvView2"
         android:textSize="24sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,14 +16,5 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:text="Next"
-        app:layout_constraintStart_toStartOf="@id/tvView"
-        app:layout_constraintTop_toBottomOf="@id/tvView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
