@@ -2,8 +2,11 @@ package com.roysylva.rxjavaapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
@@ -19,11 +22,20 @@ import io.reactivex.rxjava3.subjects.ReplaySubject;
 public class RxSubjectsAct extends AppCompatActivity {
 
     private static String TAG = "RxSubjectsAct";
+    private Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rx_subjects);
+        button = (Button) findViewById(R.id.button3);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(RxSubjectsAct.this,RxBindingActivity.class));
+            }
+        });
 
        /* behaviorSubjectDemo1();
         behaviorSubjectDemo();
