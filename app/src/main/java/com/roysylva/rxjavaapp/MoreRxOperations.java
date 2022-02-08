@@ -2,8 +2,11 @@ package com.roysylva.rxjavaapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -21,14 +24,19 @@ import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.observers.DisposableObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
+
+
+//in this section we will take a look at flatmap, concatMap operators
+
 public class MoreRxOperations extends AppCompatActivity {
     private String greeting = "Hello from RxJAva";
     private DisposableObserver<String> myObserver2;
     private static final String TAG = "MoreRxOperations";
     private TextView textView;
+    private Button button;
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private String[] array = {"C","B"};
+
 
 
 
@@ -41,6 +49,16 @@ public class MoreRxOperations extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_more_rx_operations);
         textView = (TextView)findViewById(R.id.tvView2);
+        button = (Button) findViewById(R.id.button);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MoreRxOperations.this,MoreOperators.class);
+                startActivity(intent);
+            }
+        });
+
         myObservable = Observable.create(new ObservableOnSubscribe<Student>() {
             @Override
             public void subscribe(@NonNull ObservableEmitter<Student> emitter) throws Throwable {
@@ -57,15 +75,6 @@ public class MoreRxOperations extends AppCompatActivity {
                 myObservable.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
 
-                        //map
-
-                        /*.map(new Function<Student ,Student>() {
-                            @Override
-                            public Student apply(Student student) throws Throwable {
-                                student.setName(student.getName().toUpperCase(Locale.ROOT));
-                                return student;
-                            }
-                        })*/
 
                         //flatmap operator
 

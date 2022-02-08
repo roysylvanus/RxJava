@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MoreRxOperations">
-
+    tools:context=".MoreOperators">
     <TextView
-        android:id="@+id/tvView2"
+        android:id="@+id/tvView3"
         android:textSize="24sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:text="Next"
-        app:layout_constraintStart_toStartOf="@id/tvView2"
-        app:layout_constraintTop_toBottomOf="@id/tvView2" />
+        app:layout_constraintStart_toStartOf="@id/tvView3"
+        app:layout_constraintTop_toBottomOf="@id/tvView3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

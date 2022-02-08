@@ -10,6 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RxJavaApp">
         <activity
+            android:name=".RxSubjectsAct"
+            android:exported="false" />
+        <activity
+            android:name=".MoreOperators"
+            android:exported="false" />
+        <activity
             android:name=".MoreRxOperations"
             android:exported="false" />
         <activity

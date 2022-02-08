@@ -4,7 +4,9 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/rosy/AndroidStudioProjects/RxJavaApp/app/src/main/res/layout/activity_main.xml" value="0.245018115942029" />
+        <entry key="..\:/Users/rosy/AndroidStudioProjects/RxJavaApp/app/src/main/res/layout/activity_more_operators.xml" value="0.2318840579710145" />
         <entry key="..\:/Users/rosy/AndroidStudioProjects/RxJavaApp/app/src/main/res/layout/activity_more_rx_operations.xml" value="0.1" />
+        <entry key="..\:/Users/rosy/AndroidStudioProjects/RxJavaApp/app/src/main/res/layout/activity_rx_subjects.xml" value="0.2318840579710145" />
       </map>
     </option>
   </component>
