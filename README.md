@@ -42,3 +42,190 @@ A few answers and questions about RxJava
     Where the response will be sent after work has been completed  .
 
 
+
+//Things to Note
+
+
+- When an observable emits data, it calls to observers onNext() method
+
+
+//Schedulers
+-Schedulers are where(thread) the work should be done.
+
+Schedulers.computation is used for CPU intensive tasks
+
+Schedulers.io for less intensive
+
+
+
+-Subscriber in RxJava is Where the response will be sent after work has been completed
+
+
+//Disposable
+
+Disposable are used to avoid memory leaks
+
+CompositeDisposable is used if you have more than one observer
+
+//operators
+We use operators in RxJava to modify data
+
+-just operator converts an item to observable
+
+-fromArray operator creates an observable that emits data sequently from an array
+
+-range operator creates an observable that emits item sequentially within a range
+
+-map operator takes an item and returns an item
+
+-flatmap operator takes an item and returns an observable
+
+-concat works same us flatmap  but sets in sequence. it also waits for for all observing is completed
+
+-buffer operator gathers items emitted by an observable into bundles and emit these bundles rather than emitting the items one at a time
+
+-filter emits only those items from an observable that pass a predicate test
+
+-distinct suppresses duplicated items emmitted by obsevable
+
+-skip operator skips the number of items you decide
+
+-skipLast operator skips the number of items emitted from the end of the list.
+
+//Subjects
+
+-Async Subject : - Only emits the last value of the Observable .  
+
+-Behavior Subject :- Emits the most recently emitted item and all the subsequent items of the  Observable  .   
+
+-Publish Subject :- Emits all the subsequent items of the source Observable at the time of subscription  . 
+
+-Replay Subject :- emits all the items of the source Observable, regardless of when the subscriber subscribes .
+
+//This is how we create a subject
+
+ReplaySubject<String> replaySubject = ReplaySubject.create();   
+
+    
+
+-Debounce only emit an item from an observable if a particular timespan has passwed without it emitting another item
+    
+//Backpressure
+    
+What Is Backpressure? : Short Note
+    
+If an observer can handle only 1000 items per second,  but its Observable emits 100000 items per second, what will happen ?
+
+It’s not rare to get into a situation in which an Observable is emitting items more rapidly than a subscriber can consume them.
+
+I have seen this kind of usage in lots of android projects, most of the developers doing this without knowing something is wrong, querying a database and assuming there won’t be lots of data, or calling to a REST API assuming there won’t be lots of data, then it will end up with a poor app performance in production. App will behave slowly or app will freeze time to time. There is a chance to get an Out Of Memory Exception, if this happen app will crash.
+
+When the Observer is not able to consume items as quickly as they are produced by an Observable they need to be buffered or handled in some other way, before they fill up the memory, finally causing OutOfMemoryException.
+
+RxJava provides facility to handle backpressure productively. By handling backpressure properly of a data stream, it’ll be possible to manage emitted items as needed, unnecessary items can be discarded or even let the producer know when to create and emit new items.
+
+
+
+//Flowable
+RxJava 2 , Introduced Flowable class for handling the backpressure.
+
+In the previous version of RxJava we only had Observable classs.  Observable was only one base class for dealing with backpressure-aware and non-backpressure-aware sources
+
+RxJava 2 introduced a new Observable class called Flllowable , specially prepared to work  with backpressure aware data  sources .
+
+
+
+We can easily create a Flowable from any object or value using just operator . Like we did with for the Observable.
+
+
+We can invoke any observables ‘s toFlowable method passing BackpressureStrategy as an argument.
+
+
+
+//Backpressure strategies   
+
+
+BackpressureStrategy.DROP
+
+We use this to discard the events that cannot be consumed by the Observer.   
+
+BackpressureStrategy.BUFFER
+
+If we use this, the source will buffer all the events until the subscriber can consume them. I recommend this strategy for most of the use cases, because there will be no data loss with this strategy.
+
+BackpressureStrategy.LATEST
+
+BackpressureStrategy.LATEST, force  to the source to keep only the latest items, to do that source may need to  overwrite some previous values .
+
+BackpressureStrategy.MISSING
+
+We may temporary  pass this value, if we don’t want any backpressure stratergy.
+
+BackpressureStrategy.ERROR
+
+If we don’t expect backpressure at all, we can pass BackpressureStrategy.ERROR
+
+
+
+In both of the cases( BackpressureStrategy.MISSING,  BackpressureStrategy.ERROR  ), a MissingBackpressureException will be thrown if the observer can’t keep up with the data emitting speed of the source.
+
+
+
+
+
+//Consumer Interface
+    
+RxJava Consumer Interface
+"A functional interface (callback) that accepts a single value"
+
+In very simple terms, when we are using it,  RxJava Library  creates an Observer, passes our Consumer to it an it gets called in onNext 
+
+Think about Consumer as a shortcut. We use RxJava Consumer Interface mainly for callbacks. 
+
+The concept of callbacks is to inform a class ( synchronous  or asynchronous) if some work in another class is done.
+
+Some call it the Hollywood principle: "Don't call us we call you". 
+
+We need to to show the most updated information to the user. If any change happen in a row of a database table, a callback should update the views. We can use a consumer (instead of a Observer )with an observable for that task.
+
+Consider this code sample.
+
+     .subscribe(new Consumer<List<Contact>>() {
+@Override
+public void accept(List<Contact> contacts) throws Exception {
+ 
+    contactArrayList.clear();
+    contactArrayList.addAll(contacts);
+    contactsAdapter.notifyDataSetChanged();
+  
+}
+    
+This Consumer has a callback for a generic Type List<Contact>  and is needed to receive the emitted items by the Observable.
+
+One problem with Consumer is  that you don't catch errors .
+
+You can solve that by using another Consumer as second parameter which receives a Throwable.
+
+.subscribe(new Consumer<List<Contact>>() {
+    @Override
+    public void accept(List<Contact> contacts) throws Exception {
+ 
+        contactArrayList.clear();
+        contactArrayList.addAll(contacts);
+        contactsAdapter.notifyDataSetChanged();
+       
+    }
+}, new Consumer<Throwable>() {
+    @Override
+    public void accept(Throwable throwable) throws Exception {
+       
+    }
+});
+
+
+//RXJAVA WITH ROOM
+
+plementation "androidx.room:room-rxjava2:$room_version"
+
+    // optional - RxJava3 support for Room
+    implementation "androidx.room:room-rxjava3:$room_version"
